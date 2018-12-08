@@ -103,7 +103,7 @@ void endOfTheLine(rows * row, int tag, int add, int value_size, unsigned int *ad
 	}
 }
 
-void store(rows *row, int tag,int address, int value_size, unsigned int *add_value) {
+void sop(rows *row, int tag,int address, int value_size, unsigned int *add_value) {
 	blocks * i= row-> head;
 	hm=0;
 	while (i!=NULL){
@@ -231,7 +231,7 @@ int main(int argc, char* argv[]){
 	unsigned int *load_val;
 
 	while(!feof(tracefile)){
-		strncpy(action, "/0",1);
+		strncpy(action, "\0",1);
 		fscanf(tracefile, "%s", action);
 		if (strcmp(action,"load")){
 			load=1;
@@ -244,8 +244,7 @@ int main(int argc, char* argv[]){
 
 
 		tag= address>> offset;
-		add_offset= address & ((1<<offset)-1);
-		set= ((address>>offset) & ((1<<index)-1));
+		set= (address>>offset) & ((1<<index)-1);
 
 
 
@@ -253,7 +252,7 @@ int main(int argc, char* argv[]){
 			for (int i=0; i <access_size; i++){
 				fscanf(tracefile, "%2hhx", (unsigned char*)&write_value[i]);
 			}
-			store(&data[set], tag, address, access_size, write_value);
+			sop(&data[set], tag, address, access_size, write_value);
 			printf("%s 0x%x ", action, address); //print for store
 			if (hm){
 				printf("hit");
@@ -273,7 +272,7 @@ int main(int argc, char* argv[]){
 				printf("miss ");
 			}
 			for (int i=0; i < access_size; i++){
-				printf("%0*x", 2, load_val);
+				printf("%0*x", 2, load_val[i]);
 			}
 
 			printf("\n");
